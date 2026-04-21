@@ -1,0 +1,16 @@
+{
+  "name": "research-agent-webapp",
+  "version": "1.0.0",
+  "description": "Topic-in, clear research summary out. AI research agent with web UI.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2"
+  }
+}

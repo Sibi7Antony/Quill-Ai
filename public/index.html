@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quill AI</title>
+    <link rel="icon" type="image/png" href="/letter-q.png" />
+    <meta name="description" content="Quill AI — Enter any topic and get a clear, AI-generated research summary." />
+    
+    <!-- Clean modern font (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Custom brand / hero fonts -->
+    <link href="https://fonts.cdnfonts.com/css/jumbotron" rel="stylesheet" />
+    <link href="https://fonts.cdnfonts.com/css/therilo" rel="stylesheet" />
+    <link href="https://fonts.cdnfonts.com/css/natural-precision" rel="stylesheet" />
+    <link href="https://fonts.cdnfonts.com/css/texturina" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.86/build/spline-viewer.js"></script>
+  </head>
+  <body>
+    <!-- Smooth gradient background effect -->
+    <div class="bg-gradient"></div>
+
+    <header class="topbar fade-in">
+      <div class="brand" style="font-family: 'JUMBOTRON', sans-serif;">Quill AI</div>
+      <div class="header-actions">
+        <button id="get-started-btn" class="btn-primary" type="button" style="font-family: 'Therilo', sans-serif; font-size: 1.4rem; padding: 0.7rem 1.8rem;">Get started</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- 1. HERO SECTION (Full viewport height) -->
+      <section class="hero-section">
+        <!-- 2. HEADLINE -->
+        <h1 class="fade-in" style="font-family: 'Natural Precision', sans-serif;">Build clear understanding from any topic</h1>
+        
+        <!-- 3. SUBTEXT -->
+        <p class="subtext fade-in delay-1" style="font-family: 'Natural Precision', sans-serif;">
+          Enter a topic, and your AI research agent finds sources, explains simply, and highlights key ideas.
+        </p>
+
+        <!-- 4. SPLINE BALL (CENTERPIECE) -->
+        <div class="spline-wrapper">
+          <spline-viewer 
+            url="https://prod.spline.design/uAQtdO34mk8boTav/scene.splinecode" 
+            events-target="global" 
+            tabindex="-1"
+            style="outline:none;border:none;box-shadow:none;">
+          </spline-viewer>
+        </div>
+
+        <!-- 5. INPUT BOX (BOTTOM CENTER) -->
+        <form id="research-form" class="composer composer-form fade-in delay-3">
+          <div class="input-wrapper">
+             <!-- Left side: "+" icon -->
+             <button id="attach-btn" class="icon-btn attach-icon" type="button" aria-label="Attach file">
+               <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+               </svg>
+             </button>
+             <input type="file" id="file-input" class="hidden-file-input" accept=".txt,.pdf,.md,.csv,.json,.doc,.docx" />
+             
+             <!-- Large rounded input field -->
+             <input
+               type="text"
+               id="topic"
+               name="topic"
+               placeholder="Ask Quill AI to explain a topic clearly..."
+               required
+               autocomplete="off"
+             />
+
+             <!-- Right side: circular send button (arrow icon) -->
+             <button id="submit-btn" class="submit-btn icon-btn" type="submit" aria-label="Submit">
+                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                </svg>
+             </button>
+          </div>
+          <div class="status-wrapper">
+            <p id="status" class="status"></p>
+            <span id="file-name-display" class="file-name-display"></span>
+          </div>
+        </form>
+      </section>
+
+      <!-- RESULTS SECTION -->
+      <section id="results" class="results hidden" aria-live="polite" style="font-family: 'Texturina', sans-serif;">
+        <article class="card">
+          <h2 id="overview-heading">Definition</h2>
+          <p id="overview"></p>
+        </article>
+
+        <article class="card">
+          <h2 id="easy-heading">Simplified insight</h2>
+          <p id="easy-explanation"></p>
+        </article>
+
+        <article class="card">
+          <h2>Key Points</h2>
+          <ul id="key-points"></ul>
+        </article>
+
+        <article class="card">
+          <h2>Main Contents</h2>
+          <div id="main-contents"></div>
+        </article>
+
+        <article class="card">
+          <h2>Sources</h2>
+          <ul id="sources"></ul>
+        </article>
+      </section>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
