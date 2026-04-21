@@ -1,63 +1,46 @@
-import * as cheerio from "cheerio";
+/**
+ * Wikipedia Content Fetcher — 100% free, no API key needed.
+ * Uses the Wikipedia REST API to get full article text for any title.
+ */
 
-const USER_AGENT =
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
+const WIKI_API = "https://en.wikipedia.org/w/api.php";
 
-const NOISE_SELECTORS = [
-  "script",
-  "style",
-  "noscript",
-  "svg",
-  "iframe",
-  "form",
-  "nav",
-  "footer",
-  "header",
-  "aside"
-];
-
-function cleanText(value) {
-  return value.replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
-}
-
-function extractMainText(html) {
-  const $ = cheerio.load(html);
-  NOISE_SELECTORS.forEach((selector) => $(selector).remove());
-
-  let text = cleanText($("article").first().text());
-  if (text.length < 700) text = cleanText($("main").first().text());
-  if (text.length < 700) text = cleanText($("body").text());
-
-  return text.slice(0, 9000);
-}
-
+/**
+ * Fetch and extract clean text from a Wikipedia article.
+ */
 export async function fetchPageContent(url) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 12000);
-
   try {
-    const response = await fetch(url, {
-      headers: {
-        "User-Agent": USER_AGENT,
-        Accept: "text/html"
-      },
-      signal: controller.signal,
-      redirect: "follow"
+    // Extract Wikipedia article title from the URL
+    const match = url.match(/wikipedia\.org\/wiki\/(.+)$/);
+    if (!match) return null;
+
+    const title = decodeURIComponent(match[1]);
+
+    const apiUrl = new URL(WIKI_API);
+    apiUrl.searchParams.set("action", "query");
+    apiUrl.searchParams.set("prop", "extracts");
+    apiUrl.searchParams.set("explaintext", "1");   // plain text, no HTML
+    apiUrl.searchParams.set("exsectionformat", "plain");
+    apiUrl.searchParams.set("titles", title);
+    apiUrl.searchParams.set("format", "json");
+    apiUrl.searchParams.set("origin", "*");
+    apiUrl.searchParams.set("exlimit", "1");
+
+    const response = await fetch(apiUrl.toString(), {
+      headers: { "User-Agent": "QuillAI/1.0 (educational research tool)" }
     });
 
     if (!response.ok) return null;
 
-    const contentType = (response.headers.get("content-type") || "").toLowerCase();
-    if (!contentType.includes("text/html")) return null;
+    const data = await response.json();
+    const pages = data?.query?.pages || {};
+    const page = Object.values(pages)[0];
 
-    const html = await response.text();
-    const text = extractMainText(html);
-    if (text.length < 250) return null;
+    if (!page || page.missing !== undefined || !page.extract) return null;
 
-    return text;
+    // Return first 8000 chars of the article
+    return page.extract.slice(0, 8000).trim();
   } catch {
     return null;
-  } finally {
-    clearTimeout(timer);
   }
 }
